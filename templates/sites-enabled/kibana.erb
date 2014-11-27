@@ -1,0 +1,30 @@
+<% u = URI(ENV['DATABASE_URL']) %>
+<% upstream = "#{u.scheme}://#{u.host}:#{u.port}" %>
+<% auth = Base64.encode64("#{u.user}:#{u.password}").strip %>
+server {
+  listen                *:80;
+
+  server_name           localhost;
+
+  if ($http_x_forwarded_proto != 'https') {
+    return 301 https://$host$request_uri;
+  }
+
+  location / {
+    root  /opt/kibana-3.1.2;
+    index  index.html  index.htm;
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+  }
+  <% paths = ['_aliases$', '.*/_aliases$', '_nodes$', '.*/_search$'] %>
+  <% paths += ['.*/_mapping', 'kibana-int/dashboard/.*$', 'kibana-int/temp.*$'] %>
+  <% paths.each do |path| %>
+  location ~ ^/<%= path %> {
+    proxy_pass <%= upstream %>;
+    proxy_set_header Authorization "Basic <%= auth %>";
+    proxy_read_timeout 90;
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+  }
+  <% end %>
+}
