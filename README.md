@@ -9,7 +9,7 @@ Kibana 3.1.2 as an Aptible app.
 To run as an app on Aptible:
 
  1. Create an app in your [Aptible dashboard](https://dashboard.aptible.com) for Kibana. In the
-    steps that follow, we'll use <YOUR_KIBANA_APP_HANDLE> anywhere that you should substitute the
+    steps that follow, we'll use &lt;YOUR_KIBANA_APP_HANDLE&gt; anywhere that you should substitute the
     actual app handle the results from this step in the instructions.
 
  2. Use the [Aptible CLI](https://github.com/aptible/aptible-cli) to set AUTH_CREDENTIALS to the
