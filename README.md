@@ -29,7 +29,14 @@ To run as an app on Aptible:
     aptible config:set DATABASE_URL=http://user:password@example.com --app <YOUR_KIBANA_APP_HANDLE>
     ```
 
- 4. Clone this repository and push it to your Aptible app:
+ 4. (Optional) Kibana config options can be set for `default_route` and `kibana_index` which are then saved to the config.js:
+
+    ```
+    aptible config:set DEFAULT_ROUTE=/path/to/default --app <YOUR_KIBANA_APP_HANDLE>
+    aptible config:set KIBANA_INDEX=your_index --app <YOUR_KIBANA_APP_HANDLE>
+    ```
+
+ 5. Clone this repository and push it to your Aptible app:
 
     ```
     git clone https://github.com/aptible/docker-kibana.git
