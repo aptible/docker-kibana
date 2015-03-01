@@ -42,9 +42,9 @@ function (Settings) {
      * default_route: '/dashboard/elasticsearch/WebLogs',
      */
     <% if ENV['DEFAULT_ROUTE'] %>
-    default_route     : '<% ENV['DEFAULT_ROUTE'] %>',
+    default_route     : "<%= ENV['DEFAULT_ROUTE'] %>",
     <% else %>
-    default_route     : '/dashboard/file/default.json',
+    default_route     : "/dashboard/file/default.json",
     <% end %>
 
     /** @scratch /configuration/config.js/5
@@ -56,7 +56,7 @@ function (Settings) {
      */
 
     <% if ENV['KIBANA_INDEX'] %>
-    kibana_index: <% ENV['KIBANA_INDEX'] %>
+    kibana_index: "<%= ENV['KIBANA_INDEX'] %>"
     <% else %>
     kibana_index: "kibana-int",
     <% end %>
