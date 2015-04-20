@@ -1,8 +1,8 @@
 FROM quay.io/aptible/ubuntu:14.04
 
 # Install NGiNX.
-RUN apt-get update
-RUN apt-get install -y software-properties-common \
+RUN apt-get update && \
+    apt-get install -y software-properties-common \
     python-software-properties && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
     apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
