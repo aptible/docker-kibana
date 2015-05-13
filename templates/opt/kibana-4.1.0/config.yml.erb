@@ -1,5 +1,5 @@
 <% u = URI(ENV['DATABASE_URL']) %>
-<% elasticsearch_url = "#{u.scheme}://#{u.host}:#{u.port}" %>
+<% elasticsearch_url = "#{u.scheme}://#{u.user}:#{u.password}@#{u.host}:#{u.port}" %>
 <% user = "#{u.user}" %>
 <% password = "#{u.password}" %>
 
@@ -68,4 +68,4 @@ bundled_plugin_ids:
  - plugins/settings/index
  - plugins/table_vis/index
  - plugins/vis_types/index
- - plugins/visualize/index 
+ - plugins/visualize/index

@@ -7,16 +7,16 @@ RUN apt-get update && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
     apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
 
-# Download Kibana 4.0.2, extract into /opt/kibana-4.0.2.
-RUN curl -O https://download.elastic.co/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz && \
-    echo "c925f75cd5799bfd892c7ea9c5936be10a20b119  kibana-4.0.2-linux-x64.tar.gz" | sha1sum -c - && \
-    tar zxf kibana-4.0.2-linux-x64.tar.gz -C /opt
+# Download Kibana 4.1.0, extract into /opt/kibana-4.1.0.
+RUN curl -O http://download.elastic.co/kibana/kibana/kibana-4.1.0-snapshot-linux-x64.tar.gz && \
+    echo "c8b48e419e7c2e94813b8d8dc8335145c2444a55  kibana-4.1.0-snapshot-linux-x64.tar.gz" | sha1sum -c - && \
+    tar zxf kibana-4.1.0-snapshot-linux-x64.tar.gz -C /opt
 
 # Overwrite default nginx config with our config.
 RUN rm /etc/nginx/sites-enabled/*
 ADD templates/sites-enabled /
-RUN rm /opt/kibana-4.0.2-linux-x64/config/kibana.yml
-ADD templates/opt/kibana-4.0.2/ /
+RUN rm /opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+ADD templates/opt/kibana-4.1.0/ /
 
 # Add script that starts NGiNX in front of Kibana and tails the NGiNX access/error logs.
 ADD bin .
