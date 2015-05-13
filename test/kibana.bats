@@ -9,8 +9,8 @@ teardown() {
   pkill tcpserver || true
 }
 
-@test "docker-kibana should use Kibana v3.1.2" {
-  run grep -F "kibana - v3.1.2" /opt/kibana-3.1.2/app/app.js
+@test "docker-kibana should use Kibana v4.1.0" {
+  run grep kibana opt/kibana-4.1.0-snapshot-linux-x64/src/package.json && grep 4.1.0 opt/kibana-4.1.0-snapshot-linux-x64/src/package.json
   [ "$status" -eq 0 ]
 }
 
@@ -57,19 +57,20 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "docker-kibana returns results if basic auth credentials are provided over https" {
-  XFP="X-Forwarded-Proto: https"
-  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://localhost timeout 1 /bin/bash run-kibana.sh || true
-  run curl -I -H "$XFP" http://root:admin123@localhost
+@test "docker-kibana sets the elasticsearch_url correctly " {
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
+  run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "HTTP/1.1 200 OK" ]]
 }
 
-@test "docker-kibana correctly proxies calls to an Elasticsearch backend based on DATABASE_URL" {
-  XFP="X-Forwarded-Proto: https"
-  AUTH_CREDENTIALS=root:pwd DATABASE_URL=http://a:b@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
-  RESPONSE="HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 29\n\nHello from mock Elasticsearch"
-  tcpserver 127.0.0.1 1234 sh -c "echo \"$RESPONSE\" && sleep 1" &
-  run curl -H "$XFP" http://root:pwd@localhost/_nodes
-  [[ "$output" =~ "Hello from mock Elasticsearch" ]]
+@test "docker-kibana sets the kibana_elasticsearch_username correctly" {
+ AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
+ run grep "kibana_elasticsearch_username: \"root\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+ [ "$status" -eq 0 ]
+}
+
+@test "docker-kibana sets the kibana_elasticsearch_password correctly" {
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
+  run grep "kibana_elasticsearch_password: \"admin123\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+  [ "$status" -eq 0 ]
 }
