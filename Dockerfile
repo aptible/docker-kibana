@@ -7,10 +7,12 @@ RUN apt-get update && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
     apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
 
+# Install unzip
+RUN apt-get install -y unzip
+
 # Download Kibana 4.1.0, extract into /opt/kibana-4.1.0.
-RUN curl -O http://download.elastic.co/kibana/kibana/kibana-4.1.0-snapshot-linux-x64.tar.gz && \
-    echo "c8b48e419e7c2e94813b8d8dc8335145c2444a55  kibana-4.1.0-snapshot-linux-x64.tar.gz" | sha1sum -c - && \
-    tar zxf kibana-4.1.0-snapshot-linux-x64.tar.gz -C /opt
+RUN curl -O http://download.elastic.co/kibana/kibana/kibana-4.1.0-snapshot-linux-x64.zip && \
+    unzip kibana-4.1.0-snapshot-linux-x64.zip -d /opt
 
 # Overwrite default nginx config with our config.
 RUN rm /etc/nginx/sites-enabled/*
