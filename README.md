@@ -2,7 +2,7 @@
 
 [![Docker Repository on Quay.io](https://quay.io/repository/aptible/kibana/status)](https://quay.io/repository/aptible/kibana)
 
-Kibana 4.1.0 as an Aptible app.
+Kibana 4.1.1 as an Aptible app.
 
 ## Installation and Usage
 

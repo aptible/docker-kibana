@@ -9,8 +9,8 @@ teardown() {
   pkill tcpserver || true
 }
 
-@test "docker-kibana should use Kibana v4.1.0" {
-  run grep kibana opt/kibana-4.1.0-snapshot-linux-x64/src/package.json && grep 4.1.0 opt/kibana-4.1.0-snapshot-linux-x64/src/package.json
+@test "docker-kibana should use Kibana v4.1.1" {
+  run grep kibana opt/kibana-4.1.1-linux-x64/src/package.json && grep 4.1.1 opt/kibana-4.1.1-linux-x64/src/package.json
   [ "$status" -eq 0 ]
 }
 
@@ -59,18 +59,18 @@ teardown() {
 
 @test "docker-kibana sets the elasticsearch_url correctly " {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+  run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" opt/kibana-4.1.1-linux-x64/config/kibana.yml
   [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the kibana_elasticsearch_username correctly" {
  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
- run grep "kibana_elasticsearch_username: \"root\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+ run grep "kibana_elasticsearch_username: \"root\"" opt/kibana-4.1.1-linux-x64/config/kibana.yml
  [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the kibana_elasticsearch_password correctly" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "kibana_elasticsearch_password: \"admin123\"" opt/kibana-4.1.0-snapshot-linux-x64/config/kibana.yml
+  run grep "kibana_elasticsearch_password: \"admin123\"" opt/kibana-4.1.1-linux-x64/config/kibana.yml
   [ "$status" -eq 0 ]
 }
