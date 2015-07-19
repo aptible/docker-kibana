@@ -7,16 +7,16 @@ RUN apt-get update && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
     apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
 
-# Download Kibana 3.1.2, extract into /opt/kibana-3.1.2.
-RUN curl -O https://download.elasticsearch.org/kibana/kibana/kibana-3.1.2.tar.gz && \
-    echo "a59ea4abb018a7ed22b3bc1c3bcc6944b7009dc4  kibana-3.1.2.tar.gz" | sha1sum -c - && \
-    tar zxf kibana-3.1.2.tar.gz -C /opt
+# Download Kibana 4.1.1, extract into /opt/kibana-4.1.1.
+RUN curl -O https://download.elastic.co/kibana/kibana/kibana-4.1.1-linux-x64.tar.gz && \
+    echo "d43e039adcea43e1808229b9d55f3eaee6a5edb9  kibana-4.1.1-linux-x64.tar.gz" | sha1sum -c - && \
+    tar xzf kibana-4.1.1-linux-x64.tar.gz -C /opt
 
 # Overwrite default nginx config with our config.
 RUN rm /etc/nginx/sites-enabled/*
 ADD templates/sites-enabled /
-RUN rm /opt/kibana-3.1.2/config.js
-ADD templates/opt/kibana-3.1.2 /
+RUN rm /opt/kibana-4.1.1-linux-x64/config/kibana.yml
+ADD templates/opt/kibana-4.1.1/ /
 
 # Add script that starts NGiNX in front of Kibana and tails the NGiNX access/error logs.
 ADD bin .

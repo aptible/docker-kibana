@@ -17,9 +17,8 @@ erb -T 2 -r uri -r base64 ./kibana.erb > /etc/nginx/sites-enabled/kibana || \
 (echo "Error creating nginx configuration from Elasticsearch url '$DATABASE_URL'" && exit 1)
 
 # Run config
-erb ./config.js.erb > /opt/kibana-3.1.2/config.js || \
+erb -T 2 -r uri ./config.yml.erb > /opt/kibana-4.1.1-linux-x64/config/kibana.yml || \
 (echo "Error creating kibana config file" && exit 1);
 
 service nginx start
-touch /var/log/nginx/access.log /var/log/nginx/error.log
-tail -fq /var/log/nginx/access.log /var/log/nginx/error.log
+/opt/kibana-4.1.1-linux-x64/bin/kibana
