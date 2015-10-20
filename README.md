@@ -45,10 +45,12 @@ To run as an app on Aptible:
     git push aptible master
     ```
 
-You should be up and running now. If you have a default `*.on-aptible.com` VHOST, you're done. If not, add a custom VHOST to expose your Kibaba app to the Internet. 
+You should be up and running now. If you have a default `*.on-aptible.com` VHOST, you're done. If not, add a custom VHOST to expose your Kibaba app to the Internet.
 
 If you're new to Kibana, try working through the
-[Kibana 10 minute walk through](http://www.elasticsearch.org/guide/en/kibana/current/using-kibana-for-the-first-time.html) as an introduction.
+[Kibana 10 minute walk through](http://www.elasticsearch.org/guide/en/kibana/current/using-kibana-for-the-first-time.html) as an introduction. To jump in to
+a view of your recent log messages, you can start by clicking the "Discover" tab, which should default to viewing all log messages, most recent
+first.
 
 ## Copyright and License
 
