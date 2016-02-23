@@ -41,9 +41,9 @@ ADD templates/opt/kibana-4.4.x/ /opt/kibana-${KIBANA_44_VERSION}/config
 ADD bin .
 RUN chmod 700 ./run-kibana.sh
 
-# Run tests.
+# Add tests. Those won't run as part of the build because customers don't need to run
+# them when deploying, but they'll be run in test.sh
 ADD test /tmp/test
-RUN bats /tmp/test
 
 EXPOSE 80
 
