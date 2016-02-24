@@ -21,12 +21,14 @@ ENV KIBANA_44_SHA1SUM b4f1b5d89a0854e3fb1e6d31faa1bc78e063b083
 # Kibana 4.1
 RUN curl -O "https://download.elastic.co/kibana/kibana/kibana-${KIBANA_41_VERSION}-linux-x64.tar.gz" && \
     echo "${KIBANA_41_SHA1SUM}  kibana-${KIBANA_41_VERSION}-linux-x64.tar.gz" | sha1sum -c - && \
-    tar xzf "kibana-${KIBANA_41_VERSION}-linux-x64.tar.gz" -C /opt
+    tar xzf "kibana-${KIBANA_41_VERSION}-linux-x64.tar.gz" -C /opt && \
+    rm "kibana-${KIBANA_41_VERSION}-linux-x64.tar.gz"
 
 # Kibana 4.4
 RUN curl -O "https://download.elastic.co/kibana/kibana/kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz" && \
     echo "${KIBANA_44_SHA1SUM}  kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz" | sha1sum -c - && \
-    tar xzf "kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz" -C /opt
+    tar xzf "kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz" -C /opt && \
+    rm "kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz"
 
 # Overwrite default nginx config with our config.
 RUN rm /etc/nginx/sites-enabled/*

@@ -32,7 +32,9 @@ To run as an app on Aptible:
     ```
 
  4. (Optional) Update your configuration to specify a Kibana version. If you are
-    using Elasticsearch 1.x, then use Kibana 4.1, otherwise, use Kibana 4.4:
+    using Elasticsearch 1.x, then use Kibana 4.1, otherwise, use Kibana 4.4. If
+    you don't set this, this app will auto-detect your Elasticsearch version
+    from `DATABASE_URL`, so it's entirely fine to leave it empty.
 
     ```
     # For Elasticsearch 1.x
