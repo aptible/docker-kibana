@@ -1,8 +1,10 @@
 # ![](https://gravatar.com/avatar/11d3bc4c3163e3d238d558d5c9d98efe?s=64) aptible/kibana
 
 [![Docker Repository on Quay.io](https://quay.io/repository/aptible/kibana/status)](https://quay.io/repository/aptible/kibana)
+[![Build Status](https://travis-ci.org/aptible/docker-kibana.svg?branch=master)](https://travis-ci.org/aptible/docker-kibana)
 
-Kibana 4.1.1 as an Aptible app.
+Kibana as an Aptible app. This app automatically detects your Elasticsearch
+version and starts Kibana 4.1 or 4.4 accordingly.
 
 ## Installation and Usage
 
@@ -29,14 +31,28 @@ To run as an app on Aptible:
     aptible config:set DATABASE_URL=http://user:password@example.com --app <YOUR_KIBANA_APP_HANDLE>
     ```
 
- 4. (Optional) Kibana config options can be set for `default_route` and `kibana_index` which are then saved to the config.js:
+ 4. (Optional) Update your configuration to specify a Kibana version. If you are
+    using Elasticsearch 1.x, then use Kibana 4.1, otherwise, use Kibana 4.4:
+
+    ```
+    # For Elasticsearch 1.x
+    aptible config:set KIBANA_ACTIVE_VERSION=41 --app <YOUR_KIBANA_APP_HANDLE>
+
+    # For Elasticsearch 2.x
+    aptible config:set KIBANA_ACTIVE_VERSION=44 --app <YOUR_KIBANA_APP_HANDLE>
+    ```
+
+    If you don't specify a version, this app will try to guess one based on your
+    `DATABASE_URL`, or fall back to the most recent Kibana version.
+
+ 5. (Optional) Kibana config options can be set for `default_route` and `kibana_index` which are then saved to the config.js:
 
     ```
     aptible config:set DEFAULT_ROUTE=/path/to/default --app <YOUR_KIBANA_APP_HANDLE>
     aptible config:set KIBANA_INDEX=your_index --app <YOUR_KIBANA_APP_HANDLE>
     ```
 
- 5. Clone this repository and push it to your Aptible app:
+ 6. Clone this repository and push it to your Aptible app:
 
     ```
     git clone https://github.com/aptible/docker-kibana.git
