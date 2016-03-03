@@ -6,7 +6,21 @@
 Kibana as an Aptible app. This app automatically detects your Elasticsearch
 version and starts Kibana 4.1 or 4.4 accordingly.
 
-## Installation and Usage
+
+## Security considerations
+
+This app is configured through two environment variables: `AUTH_CREDENTIALS`
+and `DATABASE_URL`. The former is used to authenticate Kibana users, and the
+latter is used to make requests to a backend Elasticsearch instance.
+
+In other words, **any user that can log in to Kibana can execute queries
+against the upstream Elasticsearch instance using Kibana's credentials**.
+
+This is probably what you want if you're deploying Kibana, but it means you
+should make sure you choose strong passwords for `AUTH_CREDENTIALS`.
+
+
+## Installation
 
 To run as an app on Aptible:
 
@@ -62,6 +76,9 @@ To run as an app on Aptible:
     git remote add aptible git@beta.aptible.com:<YOUR_KIBANA_APP_HANDLE>.git
     git push aptible master
     ```
+
+
+## Next steps
 
 You should be up and running now. If you have a default `*.on-aptible.com` VHOST, you're done. If not, add a custom VHOST to expose your Kibaba app to the Internet.
 
