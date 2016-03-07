@@ -111,3 +111,20 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
   [[ -f "/opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml" ]]
   [[ ! -f "/opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml" ]]
 }
+
+@test "docker-kibana proxies with credentials to Elasticsearch 2.x" {
+  web_log="${BATS_TEST_DIRNAME}/web.log"
+  ( while echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "2.2.0"}}' | nc -l 456; do : ; done ) > "$web_log" &
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://user:pass@localhost:456 /bin/bash run-kibana.sh &
+  # Hit Kibana directly on port 5601
+  until curl "localhost:5601/elasticsearch/.kibana/visualization/_search"; do
+    echo "Waiting for Kibana to come online"
+    sleep 1
+  done
+
+  pkill node
+  pkill nc
+
+  # Check that a authorization header was sent to "Elasticsearch"
+  grep -A8 ".kibana/" "$web_log" | grep -i "Authorization: Basic"
+}
