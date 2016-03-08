@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common \
     python-software-properties && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
-    apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
+    apt-get -y install curl ucspi-tcp apache2-utils ruby
 
 # We're going to install 2 versions of Kibana, and choose which one to start
 # at runtime based on the Elasticsearch version we see:
@@ -30,10 +30,13 @@ RUN curl -O "https://download.elastic.co/kibana/kibana/kibana-${KIBANA_44_VERSIO
     tar xzf "kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz" -C /opt && \
     rm "kibana-${KIBANA_44_VERSION}-linux-x64.tar.gz"
 
-# Overwrite default nginx config with our config.
-RUN rm /etc/nginx/sites-enabled/*
-ADD templates/sites-enabled /
+# Download Oauth2 Proxy 2.0.1, extract into /opt/oauth2_proxy
+RUN curl -L -O https://github.com/bitly/oauth2_proxy/releases/download/v2.0.1/oauth2_proxy-2.0.1.linux-amd64.go1.4.2.tar.gz && \
+  echo "950e08d52c04104f0539e6945fc42052b30c8d1b  oauth2_proxy-2.0.1.linux-amd64.go1.4.2.tar.gz" | sha1sum -c - && \
+  tar zxf oauth2_proxy-2.0.1.linux-amd64.go1.4.2.tar.gz -C /opt && \
+  mv /opt/oauth2_proxy-2.0.1.linux-amd64.go1.4.2 /opt/oauth2_proxy
 
+# Overwrite default config with our config.
 RUN rm "/opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml" \
  && rm "/opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml"
 ADD templates/opt/kibana-4.1.x/ /opt/kibana-${KIBANA_41_VERSION}/config
