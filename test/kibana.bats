@@ -14,6 +14,34 @@ teardown() {
   [[ "$output" =~ "DATABASE_URL" ]]
 }
 
+@test "docker-kibana requires the FORCE_SSL environment variable to be set" {
+  export AUTH_CREDENTIALS=foobar
+  run timeout 1 /bin/bash run-kibana.sh
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "FORCE_SSL" ]]
+}
+
+@test "docker-kibana requires the OAUTH2_PROXY_CLIENT_ID environment variable to be set" {
+  export AUTH_CREDENTIALS=foobar
+  run timeout 1 /bin/bash run-kibana.sh
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "OAUTH2_PROXY_CLIENT_ID" ]]
+}
+
+@test "docker-kibana requires the OAUTH2_PROXY_CLIENT_SECRET environment variable to be set" {
+  export AUTH_CREDENTIALS=foobar
+  run timeout 1 /bin/bash run-kibana.sh
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "OAUTH2_PROXY_CLIENT_SECRET" ]]
+}
+
+@test "docker-kibana requires the OAUTH2_PROXY_COOKIE_SECRET environment variable to be set" {
+  export AUTH_CREDENTIALS=foobar
+  run timeout 1 /bin/bash run-kibana.sh
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "OAUTH2_PROXY_COOKIE_SECRET" ]]
+}
+
 @test "docker-kibana sets the elasticsearch url correctly for Kibana 4.1.x" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=41 timeout 1 /bin/bash run-kibana.sh || true
   run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml"

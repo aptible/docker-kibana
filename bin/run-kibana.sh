@@ -1,25 +1,27 @@
 #!/bin/bash
 #shellcheck disable=SC2086
 {
+  : ${FORCE_SSL:?"Error: environment variable FORCE_SSL should be set to ensure HTTPS only access."}
+  : ${OAUTH2_PROXY_CLIENT_ID:?"Error: environment variable OAUTH2_PROXY_CLIENT_ID should be set to the oauth provider's CLIENT ID."}
+  : ${OAUTH2_PROXY_CLIENT_SECRET:?"Error: environment variable OAUTH2_PROXY_CLIENT_SECRET should be set to the oauth provider's CLIENT SECRET"}
+  : ${OAUTH2_PROXY_COOKIE_SECRET:?"Error: environment variable OAUTH2_PROXY_COOKIE_SECRET should be set to either 8, 16, or 32 byte string."}
   : ${DATABASE_URL:?"Error: environment variable DATABASE_URL should be set to the Aptible DATABASE_URL of the Elasticsearch instance you wish to use."}
 }
 
-# Run oath2_plugin
-/opt/oauth2_proxy/oauth2_proxy -client-id=$GITHUB_CLIENT_ID \
-                              -client-secret=$GITHUB_SECRET \
-                              -provider=github \
-                              -upstream=http://127.0.0.1:5601 \
-                              -cookie-secret=ugivXaBhREZKdLZN9XJNb8dLuRmXfV \
-                              -login-url=https://github.com/login/oauth/authorize \
-                              -cookie-httponly=true \
-                              -cookie-secure=false \
-                              -http-address="0.0.0.0:80" \
-                              -email-domain=* \
-                              -github-team=$GITHUB_TEAMS \
-                              -github-org=$GITHUB_ORG \
-                              -version=false \
-                              -cookie-expire=$OAUTH_COOKIE_EXPIRATION \
-                              -redirect-url=$OAUTH_REDIRECT_URL &
+# Run oauth2 proxy
+# Oauth2 proxy by default listens for certain env var (e.g. OAUTH2_PROXY_CLIENT_ID)
+# The complete list can be found on
+# https://github.com/bitly/oauth2_proxy#environment-variables
+/opt/oauth2_proxy/oauth2_proxy -provider=github \
+                               -upstream=http://127.0.0.1:5601 \
+                               -login-url=https://github.com/login/oauth/authorize \
+                               -cookie-httponly=true \
+                               -cookie-secure=true \
+                               -http-address="0.0.0.0:80" \
+                               -email-domain=* \
+                               -github-team=$GITHUB_TEAMS \
+                               -github-org=$GITHUB_ORG \
+                               -redirect-url=$OAUTH2_PROXY_REDIRECT_URL &
 
 # If we don't have a version set, then try to guess one form the Elasticsearch server.
 if [[ -z "$KIBANA_ACTIVE_VERSION" ]]; then
