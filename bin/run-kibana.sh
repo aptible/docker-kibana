@@ -51,4 +51,11 @@ erb -T 2 -r uri "/opt/kibana-${KIBANA_VERSION}/config/kibana.yml.erb" > "/opt/ki
 }
 
 service nginx start
+
+# Default node options to limit Kibana memory usage as per https://github.com/elastic/kibana/issues/5170
+# If this is not set, Node tries to use about 1.5GB of memory before it starts actively garbage collect.
+# shellcheck disable=SC2086
+: ${NODE_OPTIONS:="--max-old-space-size=256"}
+
+export NODE_OPTIONS
 exec "/opt/kibana-${KIBANA_VERSION}-linux-x64/bin/kibana"
