@@ -75,7 +75,7 @@ push: build
 	set -e ; \
 	for registry in $(PUSH_REGISTRIES); do \
 		for tag in $(PUSH_TAGS); do \
-			docker tag -f "$(REGISTRY)/$(REPOSITORY):$(TAG)" "$${registry}/$(REPOSITORY):$${tag}"; \
+			docker tag "$(REGISTRY)/$(REPOSITORY):$(TAG)" "$${registry}/$(REPOSITORY):$${tag}"; \
 			docker push "$${registry}/$(REPOSITORY):$${tag}"; \
 		done \
 	done
@@ -88,7 +88,7 @@ test: build
 build: $(TAG)/Dockerfile
 	docker build -t "$(REGISTRY)/$(REPOSITORY):$(TAG)" -f "$(TAG)/Dockerfile" .
 ifeq "$(TAG)" "$(LATEST_TAG)"
-	docker tag -f "$(REGISTRY)/$(REPOSITORY):$(TAG)" "$(REGISTRY)/$(REPOSITORY):latest"
+	docker tag "$(REGISTRY)/$(REPOSITORY):$(TAG)" "$(REGISTRY)/$(REPOSITORY):latest"
 endif
 
 
