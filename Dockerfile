@@ -10,10 +10,10 @@ RUN apt-get update && \
 # We're going to install 2 versions of Kibana, and choose which one to start
 # at runtime based on the Elasticsearch version we see:
 # - Kibana 4.1.X supports Elasticsearch 1.x
-# - Kibana 4.4.X supports Elasticsearch 2.x
+# - Kibana 4.4.X supports Elasticsearch 2.2
 
-ENV KIBANA_41_VERSION 4.1.5
-ENV KIBANA_41_SHA1SUM 7c1e597f69abd2c9c2b4de045350199d8b187a9a
+ENV KIBANA_41_VERSION 4.1.11
+ENV KIBANA_41_SHA1SUM 13655cf94f5c47e8ab4d94c8170128f63be46ad5
 
 ENV KIBANA_44_VERSION 4.4.2
 ENV KIBANA_44_SHA1SUM 6251dbab12722ea1a036d8113963183f077f9fa7
