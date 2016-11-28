@@ -163,8 +163,10 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
   web_log="${BATS_TEST_DIRNAME}/web.log"
   ( while echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "5.0.1"}}' | nc -l 456; do : ; done ) > "$web_log" &
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://user:pass@localhost:456 /bin/bash run-kibana.sh &
-  # Hit Kibana directly on port 5601
-  until curl "localhost:5601/elasticsearch/.kibana/visualization/_search"; do
+
+  # Hit Kibana directly on port 5601. Set some dummy credentials when making
+  # our request to check Kibana doesn't proxy using those.
+  until curl -H "Authorization: FOOBAR" "localhost:5601/elasticsearch/.kibana/visualization/_search"; do
     echo "Waiting for Kibana to come online"
     sleep 1
   done
@@ -172,6 +174,7 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
   pkill node
   pkill nc
 
-  # Check that a authorization header was sent to "Elasticsearch"
-  grep -A8 ".kibana/" "$web_log" | grep -i "Authorization: Basic"
+  # Check that a authorization header was sent to "Elasticsearch" for the right
+  # credentials.
+  grep -A8 ".kibana/" "$web_log" | grep -i "Authorization: Basic dXNlcjpwYXNz"
 }
