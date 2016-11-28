@@ -8,8 +8,9 @@ teardown() {
   rm /var/log/nginx/error.log || true
   pkill tcpserver || true
   pkill nc || true
-  rm -f "/opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml"
-  rm -f "/opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml"
+  rm -f "/opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml"
+  rm -f "/opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml"
+  rm -f "/opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml"
 }
 
 @test "docker-kibana requires the AUTH_CREDENTIALS environment variable to be set" {
@@ -57,37 +58,55 @@ teardown() {
 
 @test "docker-kibana sets the elasticsearch url correctly for Kibana 4.1.x" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=41 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml"
+  run grep "elasticsearch_url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml"
   [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the elasticsearch username correctly for Kibana 4.1.x" {
  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=41 timeout 1 /bin/bash run-kibana.sh || true
- run grep "kibana_elasticsearch_username: \"root\"" "opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml"
+ run grep "kibana_elasticsearch_username: \"root\"" "opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml"
  [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the elasticsearch password correctly for Kibana 4.1.x" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=41 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "kibana_elasticsearch_password: \"admin123\"" "opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml"
+  run grep "kibana_elasticsearch_password: \"admin123\"" "opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml"
   [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the elasticsearch url correctly for Kibana 4.4.x" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=44 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "elasticsearch.url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml"
+  run grep "elasticsearch.url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml"
   [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the elasticsearch username correctly for Kibana 4.4.x" {
  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=44 timeout 1 /bin/bash run-kibana.sh || true
- run grep "elasticsearch.username: \"root\"" "opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml"
+ run grep "elasticsearch.username: \"root\"" "opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml"
  [ "$status" -eq 0 ]
 }
 
 @test "docker-kibana sets the elasticsearch password correctly for Kibana 4.4.x" {
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=44 timeout 1 /bin/bash run-kibana.sh || true
-  run grep "elasticsearch.password: \"admin123\"" "opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml"
+  run grep "elasticsearch.password: \"admin123\"" "opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml"
+  [ "$status" -eq 0 ]
+}
+
+@test "docker-kibana sets the elasticsearch url correctly for Kibana 5.x" {
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=5 timeout 1 /bin/bash run-kibana.sh || true
+  run grep "elasticsearch.url: \"http://root:admin123@localhost:1234\"" "opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml"
+  [ "$status" -eq 0 ]
+}
+
+@test "docker-kibana sets the elasticsearch username correctly for Kibana 5.x" {
+ AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=5 timeout 1 /bin/bash run-kibana.sh || true
+ run grep "elasticsearch.username: \"root\"" "opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml"
+ [ "$status" -eq 0 ]
+}
+
+@test "docker-kibana sets the elasticsearch password correctly for Kibana 5.x" {
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://root:admin123@localhost:1234 KIBANA_ACTIVE_VERSION=5 timeout 1 /bin/bash run-kibana.sh || true
+  run grep "elasticsearch.password: \"admin123\"" "opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml"
   [ "$status" -eq 0 ]
 }
 
@@ -100,16 +119,18 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
   # but it doesn't really matter: we're only checking which configuration files get created.
   echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "1.5.2"}}' | nc -l 456 &
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://localhost:456 run timeout 1 /bin/bash run-kibana.sh
-  [[ ! -f "/opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml" ]]
-  [[ -f "/opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml" ]]
+  [[ ! -f "/opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml" ]]
+  [[ -f "/opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml" ]]
+  [[ ! -f "/opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml" ]]
 }
 
 @test "docker-kibana detects Elasticsearch 2.x" {
   # Same notes as above.
   echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "2.2.0"}}' | nc -l 456 &
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://localhost:456 run timeout 1 /bin/bash run-kibana.sh
-  [[ -f "/opt/kibana-${KIBANA_44_VERSION}-linux-x64/config/kibana.yml" ]]
-  [[ ! -f "/opt/kibana-${KIBANA_41_VERSION}-linux-x64/config/kibana.yml" ]]
+  [[ ! -f "/opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml" ]]
+  [[ -f "/opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml" ]]
+  [[ ! -f "/opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml" ]]
 }
 
 @test "docker-kibana proxies with credentials to Elasticsearch 2.x" {
@@ -127,4 +148,33 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
 
   # Check that a authorization header was sent to "Elasticsearch"
   grep -A8 ".kibana/" "$web_log" | grep -i "Authorization: Basic"
+}
+
+@test "docker-kibana detects Elasticsearch 5.x" {
+  # Same notes as above.
+  echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "5.0.1"}}' | nc -l 456 &
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://localhost:456 run timeout 1 /bin/bash run-kibana.sh
+  [[ ! -f "/opt/kibana-${KIBANA_44_VERSION}/config/kibana.yml" ]]
+  [[ ! -f "/opt/kibana-${KIBANA_41_VERSION}/config/kibana.yml" ]]
+  [[ -f "/opt/kibana-${KIBANA_5_VERSION}/config/kibana.yml" ]]
+}
+
+@test "docker-kibana proxies with credentials to Elasticsearch 5.x" {
+  web_log="${BATS_TEST_DIRNAME}/web.log"
+  ( while echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "5.0.1"}}' | nc -l 456; do : ; done ) > "$web_log" &
+  AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://user:pass@localhost:456 /bin/bash run-kibana.sh &
+
+  # Hit Kibana directly on port 5601. Set some dummy credentials when making
+  # our request to check Kibana doesn't proxy using those.
+  until curl -H "Authorization: FOOBAR" "localhost:5601/elasticsearch/.kibana/visualization/_search"; do
+    echo "Waiting for Kibana to come online"
+    sleep 1
+  done
+
+  pkill node
+  pkill nc
+
+  # Check that a authorization header was sent to "Elasticsearch" for the right
+  # credentials.
+  grep -A8 ".kibana/" "$web_log" | grep -i "Authorization: Basic dXNlcjpwYXNz"
 }
