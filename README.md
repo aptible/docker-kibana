@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/aptible/docker-kibana.svg?branch=master)](https://travis-ci.org/aptible/docker-kibana)
 
 Kibana as an Aptible app. This app automatically detects your Elasticsearch
-version and starts Kibana 4.1 or 4.4 accordingly.
+version and starts Kibana 4.1, 4.4, or 5.0 accordingly.
 
 
 ## Security considerations
@@ -46,9 +46,10 @@ To run as an app on Aptible:
     ```
 
  4. (Optional) Update your configuration to specify a Kibana version. If you are
-    using Elasticsearch 1.x, then use Kibana 4.1, otherwise, use Kibana 4.4. If
-    you don't set this, this app will auto-detect your Elasticsearch version
-    from `DATABASE_URL`, so it's entirely fine to leave it empty.
+    using Elasticsearch 1.x, then use Kibana 4.1. For Elasticsearch 2.x, use
+    Kibana 4.4. If you have Elasticsearch 5.0, use Kibana 5. If you don't set this,
+    this app will auto-detect your Elasticsearch version from `DATABASE_URL`,
+    so it's entirely fine to leave it empty.
 
     ```
     # For Elasticsearch 1.x
@@ -56,6 +57,9 @@ To run as an app on Aptible:
 
     # For Elasticsearch 2.x
     aptible config:set KIBANA_ACTIVE_VERSION=44 --app <YOUR_KIBANA_APP_HANDLE>
+
+    # For Elasticsearch 5.x
+    aptible config:set KIBANA_ACTIVE_VERSION=5 --app <YOUR_KIBANA_APP_HANDLE>
     ```
 
     If you don't specify a version, this app will try to guess one based on your
