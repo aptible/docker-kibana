@@ -3,9 +3,11 @@ FROM quay.io/aptible/ubuntu:14.04
 # Install NGiNX.
 RUN apt-get update && \
     apt-get install -y software-properties-common \
-    python-software-properties && \
+    python-software-properties \
+    python-pip && \
     add-apt-repository -y ppa:nginx/stable && apt-get update && \
-    apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
+    apt-get -y install curl ucspi-tcp apache2-utils nginx ruby && \
+    pip install elasticsearch-curator
 
 # We're going to install 2 versions of Kibana, and choose which one to start
 # at runtime based on the Elasticsearch version we see:
@@ -59,11 +61,16 @@ RUN patch -p1 -d "/opt/kibana-${KIBANA_44_VERSION}" < /patches/0001-Set-authoriz
 # Add script that starts NGiNX in front of Kibana and tails the NGiNX access/error logs.
 ADD bin .
 RUN chmod 700 ./run-kibana.sh
+RUN chmod 700 ./start-cron.sh
 
 # Add tests. Those won't run as part of the build because customers don't need to run
 # them when deploying, but they'll be run in test.sh
 ADD test /tmp/test
 
 EXPOSE 80
+
+ADD . /app
+RUN set -a && . /app/.aptible.env
+RUN ./start-cron.sh
 
 CMD ["./run-kibana.sh"]
