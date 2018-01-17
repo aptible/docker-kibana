@@ -1,0 +1,2 @@
+before_release:
+ - /usr/bin/check-es-version.sh "$DATABASE_URL"

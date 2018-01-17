@@ -6,7 +6,12 @@ services:
 
 env:
   matrix:
-    - TAG=latest
+    - TAG=4.1
+    - TAG=4.4
+    - TAG=5.0
+    - TAG=5.1
+    - TAG=6.0
+    - TAG=6.1
 
 script:
   - make build
