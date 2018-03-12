@@ -29,8 +29,10 @@ print 4.1 if es_version.start_with?('1.')
 print 4.4 if es_version.start_with?('2.')
 print 5.0 if es_version.start_with?('5.0.')
 print 5.1 if es_version.start_with?('5.1.')
+print 5.6 if es_version.start_with?('5.6.')
 print 6.0 if es_version.start_with?('6.0.')
-print 6.1 if es_version.start_with?('6.1.')"
+print 6.1 if es_version.start_with?('6.1.')
+print 6.2 if es_version.start_with?('6.2.')"
 
 wait_for_request
 

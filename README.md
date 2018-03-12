@@ -3,9 +3,7 @@
 [![Docker Repository on Quay.io](https://quay.io/repository/aptible/kibana/status)](https://quay.io/repository/aptible/kibana)
 [![Build Status](https://travis-ci.org/aptible/docker-kibana.svg?branch=master)](https://travis-ci.org/aptible/docker-kibana)
 
-Kibana as an Aptible app. This app automatically detects your Elasticsearch
-version and starts Kibana 4.1, 4.4, or 5.0 accordingly.
-
+Kibana as an Aptible App.
 
 ## Security considerations
 
@@ -23,7 +21,7 @@ should make sure you choose strong passwords for `AUTH_CREDENTIALS`.
 
 To deploy Kibana as an App on Enclave:
 
-1. Create a new App for Kibana. In the step that follows, we'll use `$HANDLE` anywhere that you should substitute the actual App handle the results from this step.
+1. Create a new App for Kibana. In the step that follows, we'll use `$HANDLE` anywhere that you should substitute the actual App handle you specified in this step.
 
     ```
     aptible apps:create "$HANDLE"
@@ -42,9 +40,11 @@ Note: the Elasticsearch database connection specified by `DATABASE_URL`  must be
 
 ## Available Tags
 
-* `latest`: Currently Kibana 6.1
+* `latest`: Currently Kibana 6.2
+* `6.2`: Kibana 6.2.2 (For Elasticsearch 6.2.x)
 * `6.1`: Kibana 6.1.3 (for Elasticsearch 6.1.x)
 * `6.0`: Kibana 6.0.1 (for Elasticsearch 6.0.x)
+* `5.6`: Kibana 5.6.8 (for Elasticsearch 5.6.x)
 * `5.1`: Kibana 5.1.2 (for Elasticsearch 5.1.x)
 * `5.0`: Kibana 5.0.1 (for Elasticsearch 5.0.x)
 * `4.4`: Kibana 4.4.2 (for Elasticsearch 2.x)
