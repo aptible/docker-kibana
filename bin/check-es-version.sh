@@ -4,7 +4,34 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-DATABASE_URL="$1"
+function echo_with_banner() {
+  echo "."
+  echo "."
+  echo "###########################"
+  echo "#"
+  echo "# ERROR - READ THIS MESSAGE"
+  echo "#"
+  echo "#"
+
+  for message in "$@"; do
+    echo "# > $message"
+  done
+  echo "#"
+
+  echo "#"
+  echo "# END OF ERROR"
+  echo "#"
+  echo "###########################"
+  echo "."
+  echo "."
+}
+
+DATABASE_URL="${1:-}"
+
+if [[ -z "$DATABASE_URL" ]]; then
+  echo_with_banner "No DATABASE_URL was provided"
+  exit 1
+fi
 
 function wait_for_request {
   for _ in {1..10}; do
@@ -15,7 +42,10 @@ function wait_for_request {
     fi
   done
 
-  printf "! ! ! ! ! !\n  Unable to reach Elasticsearch server, please check DATABASE_URL and your database server. \n ! ! ! ! ! !"
+  echo_with_banner \
+    "Unable to reach Elasticsearch server, please check DATABASE_URL and your database server." \
+    "If necessary, correct the URL. Then, deploy again."
+
   return 1
 }
 
@@ -36,15 +66,18 @@ print 6.2 if es_version.start_with?('6.2.')"
 
 wait_for_request
 
-KIBANA_NEEDED_VERSION="$(curl -fsSL "$DATABASE_URL" | ruby -e "$KIBANA_VERSION_PARSER")" 
+KIBANA_NEEDED_VERSION="$(curl -fsSL "$DATABASE_URL" | ruby -e "$KIBANA_VERSION_PARSER")"
 
 if [[ -z "$KIBANA_NEEDED_VERSION" ]]; then
-  printf "! ! ! ! ! !\n Not an Elasticsearch server, or your version of Elasticsearch not supported by this application. \n ! ! ! ! ! !"
+  echo_with_banner \
+    "DATABASE_URL does not point at a supported Elasticsearch server."
   exit 1
 fi
 
 if [[ "$TAG" != "$KIBANA_NEEDED_VERSION" ]]; then
-  printf "! ! ! ! ! !\n You're using aptible/kibana:${TAG}, which is not compatible with your version of Elasticsearch,"
-  printf "you need to use aptible/kibana:${KIBANA_NEEDED_VERSION} ! ! ! ! ! !"
+  echo_with_banner \
+    "Incorrect Kibana version detected!" \
+    "You are using aptible/kibana:${TAG}, which is not compatible with your version of Elasticsearch." \
+    "Deploy again using the right image: aptible/kibana:${KIBANA_NEEDED_VERSION}"
   exit 1
 fi

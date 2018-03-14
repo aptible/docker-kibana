@@ -45,5 +45,5 @@ HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
   echo '{"version": {"number": "1.0"}}' > /tmp/test/index.html
   ( cd /tmp/test/ && busybox httpd -f -p '127.0.0.1:456' ) &
   run /bin/bash check-es-version.sh http://localhost:456
-  [ $(expr "$output" : ".*you need to use aptible/kibana:4.1") -ne 0 ]
+  [ $(expr "$output" : ".*using the right image: aptible/kibana:4.1") -ne 0 ]
 }
