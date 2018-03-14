@@ -2,6 +2,7 @@
 <% elasticsearch_url = "#{u.scheme}://#{u.user}:#{u.password}@#{u.host}:#{u.port}" %>
 <% user = "#{u.user}" %>
 <% password = "#{u.password}" %>
+<% auth = Base64.encode64(user + ':' + password).chomp %>
 
 # Kibana is served by a back end server. This controls which port to use.
 server.port: 5601
@@ -87,3 +88,5 @@ elasticsearch.shardTimeout: 0
 # since it would overwrite the header Kibana will generate using the
 # Elasticsearch DB URL.
 elasticsearch.requestHeadersWhitelist: []
+
+elasticsearch.customHeaders: { Authorization: Basic <%= auth %> }

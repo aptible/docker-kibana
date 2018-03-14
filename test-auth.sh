@@ -33,8 +33,10 @@ function cleanup {
 
 function wait_for_request {
   CONTAINER=$1
+  shift
+
   for _ in $(seq 1 30); do
-    if docker exec -it "$CONTAINER" curl -f -v "$@" > /dev/null 2>&1; then
+    if docker exec -it "$CONTAINER" curl -f -v "$@" >/dev/null 2>&1; then
       return 0
     fi
     sleep 1
@@ -72,10 +74,14 @@ docker run -d --name="$KIBANA_CONTAINER" \
   -e DATABASE_URL="http://${ES_USER}:${ES_PASS}@${ES_IP}:80" \
   -e AUTH_CREDENTIALS="$KIBANA_CREDS" \
   -e TESTING="true" \
-  "$IMG" 
+  "$IMG"
 
 wait_for_request "${KIBANA_CONTAINER}" \
   'http://localhost:5601/elasticsearch/*/_search' \
   -H "kbn-version: $KIBANA_VERSION" \
   -H 'content-type: application/json' \
   --data-binary '{}'
+
+wait_for_request "${KIBANA_CONTAINER}" \
+  'http://localhost:5601/app/kibana' \
+  -H "kbn-version: $KIBANA_VERSION"
