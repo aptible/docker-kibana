@@ -85,7 +85,7 @@ esac
   echo '{"version": {"number": "0.8"}}' > /tmp/test/index.html
   ( cd /tmp/test/ && busybox httpd -f -p '127.0.0.1:456' ) &
   run /bin/bash check-es-version.sh http://localhost:456
-  [ $(expr "$output" :  ".*Not an Elasticsearch server") -ne 0 ]
+  [ $(expr "$output" :  ".*supported Elasticsearch server") -ne 0 ]
 }
 
 @test "docker-kibana detects inability to connect to Elasticsearch" {
