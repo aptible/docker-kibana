@@ -6,6 +6,11 @@ teardown() {
   cleanup
 }
 
+@test "It should install Kibana $KIBANA_VERSION" {
+  run /opt/kibana/bin/kibana --version
+  [[ "$output" =~ "$KIBANA_VERSION"  ]]
+}
+
 @test "docker-kibana requires the AUTH_CREDENTIALS environment variable to be set" {
   export DATABASE_URL=foobar
   run timeout 1 /bin/bash run-kibana.sh

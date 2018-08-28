@@ -6,11 +6,6 @@ teardown() {
   cleanup
 }
 
-@test "It should install Kibana 4.1.1" {
-  run /opt/kibana/bin/kibana --version
-  [[ "$output" =~ "4.1.1"  ]]
-}
-
 @test "docker-kibana detects supported Elasticsearch for kibana:${KIBANA_VERSION}" {
   echo '{"version": {"number": "1.5.2"}}' > /tmp/test/index.html
   ( cd /tmp/test/ && busybox httpd -f -p '127.0.0.1:456' ) &
