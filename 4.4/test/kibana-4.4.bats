@@ -6,11 +6,6 @@ teardown() {
   cleanup
 }
 
-@test "It should install Kibana 4.4.2" {
-  run /opt/kibana/bin/kibana --version
-  [[ "$output" =~ "4.4.2"  ]]
-}
-
 HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
 
 "

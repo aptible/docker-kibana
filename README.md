@@ -81,14 +81,14 @@ You might encounter the following errors when attempting to deploy:
 ## Available Tags and Compatibility
 
 * `latest`: Currently Kibana 6.2
-* `6.2`: Kibana 6.2.2 (For Elasticsearch 6.2.x)
-* `6.1`: Kibana 6.1.3 (for Elasticsearch 6.1.x)
-* `6.0`: Kibana 6.0.1 (for Elasticsearch 6.0.x)
-* `5.6`: Kibana 5.6.8 (for Elasticsearch 5.6.x)
-* `5.1`: Kibana 5.1.2 (for Elasticsearch 5.1.x)
-* `5.0`: Kibana 5.0.1 (for Elasticsearch 5.0.x)
-* `4.4`: Kibana 4.4.2 (for Elasticsearch 2.x)
-* `4.1`: Kibana 4.1.11 (for Elasticsearch 1.5.x)
+* `6.2`: For Elasticsearch 6.2.x
+* `6.1`: For Elasticsearch 6.1.x
+* `6.0`: For Elasticsearch 6.0.x
+* `5.6`: For Elasticsearch 5.6.x
+* `5.1`: (EOL 2018-06-08) For Elasticsearch 5.1.x
+* `5.0`: (EOL 2018-04-26) For Elasticsearch 5.0.x
+* `4.4`: (EOL 2017-08-02) For Elasticsearch 2.x
+* `4.1`: (EOL 2016-11-10) For Elasticsearch 1.5.x
 
 
 ## Next steps

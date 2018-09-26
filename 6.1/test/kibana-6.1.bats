@@ -6,18 +6,13 @@ teardown() {
   cleanup
 }
 
-@test "It should install Kibana 6.1.3" {
-  run /opt/kibana/bin/kibana --version
-  [[ "$output" =~ "6.1.3"  ]]
-}
-
 HTTP_RESPONSE_HEAD="HTTP/1.1 200 OK
 
 "
 
-@test "docker-kibana proxies with credentials to Elasticsearch 6.1" {
+@test "docker-kibana proxies with credentials to Elasticsearch ${KIBANA_VERSION}" {
   web_log="${BATS_TEST_DIRNAME}/web.log"
-  ( while echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "6.1.3"}}' | nc -l 456; do : ; done ) > "$web_log" &
+  ( while echo "$HTTP_RESPONSE_HEAD" '{"version": {"number": "'"${KIBANA_VERSION}"'"}}' | nc -l 456; do : ; done ) > "$web_log" &
   AUTH_CREDENTIALS=root:admin123 DATABASE_URL=http://user:pass@localhost:456 /bin/bash run-kibana.sh &
 
   # Hit Kibana directly on port 5601. Set some dummy credentials when making
