@@ -73,15 +73,17 @@ echo "Starting Kibana"
 docker run -d --name="$KIBANA_CONTAINER" \
   -e DATABASE_URL="http://${ES_USER}:${ES_PASS}@${ES_IP}:80" \
   -e AUTH_CREDENTIALS="$KIBANA_CREDS" \
-  -e TESTING="true" \
+  -e AUTH_TESTING="true" \
   "$IMG"
 
 wait_for_request "${KIBANA_CONTAINER}" \
-  'http://localhost:5601/elasticsearch/*/_search' \
+   -u "$KIBANA_CREDS" \
+  'http://localhost:80/elasticsearch/*/_search' \
   -H "kbn-version: $KIBANA_VERSION" \
   -H 'content-type: application/json' \
   --data-binary '{}'
 
 wait_for_request "${KIBANA_CONTAINER}" \
-  'http://localhost:5601/app/kibana' \
+  -u "$KIBANA_CREDS" \
+  'http://localhost:80/app/kibana' \
   -H "kbn-version: $KIBANA_VERSION"
