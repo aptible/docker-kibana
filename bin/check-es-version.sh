@@ -65,7 +65,8 @@ print 6.1 if es_version.start_with?('6.1.')
 print 6.2 if es_version.start_with?('6.2.')
 print 6.3 if es_version.start_with?('6.3.')
 print 6.4 if es_version.start_with?('6.4.')
-print 6.5 if es_version.start_with?('6.5.')"
+print 6.5 if es_version.start_with?('6.5.')
+print 6.6 if es_version.start_with?('6.6.')"
 
 wait_for_request
 
