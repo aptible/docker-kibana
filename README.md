@@ -80,15 +80,16 @@ You might encounter the following errors when attempting to deploy:
 
 ## Available Tags and Compatibility
 
-* `latest`: Currently Kibana 6.7
-* `6.7`: For Elasticserach 6.7.x
-* `6.6`: For Elasticserach 6.6.x
-* `6.5`: For Elasticserach 6.5.x
-* `6.4`: For Elasticserach 6.4.x
-* `6.3`: For Elasticserach 6.3.x
+* `latest`: Currently Kibana 6.8
+* `6.8`: For Elasticsearch 6.8.x
+* `6.7`: For Elasticsearch 6.7.x
+* `6.6`: For Elasticsearch 6.6.x
+* `6.5`: For Elasticsearch 6.5.x
+* `6.4`: For Elasticsearch 6.4.x
+* `6.3`: For Elasticsearch 6.3.x
 * `6.2`: For Elasticsearch 6.2.x
-* `6.1`: For Elasticsearch 6.1.x
-* `6.0`: For Elasticsearch 6.0.x
+* `6.1`: (EOL 2019-06-13) For Elasticsearch 6.1.x
+* `6.0`: (EOL 2019-05-14) For Elasticsearch 6.0.x
 * `5.6`: (EOL 2019-03-11) For Elasticsearch 5.6.x
 * `5.1`: (EOL 2018-06-08) For Elasticsearch 5.1.x
 * `5.0`: (EOL 2018-04-26) For Elasticsearch 5.0.x
