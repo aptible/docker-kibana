@@ -3,9 +3,15 @@ server {
 
   server_name           localhost;
 
+
+<% if ENV['AUTH_TESTING'] %>
+# Since we don't terminate TLS in this container, it's impossible to test auth
+# requests with this redirect in place. This allows a better test in `test-auth.sh`
+<% else %>
   if ($http_x_forwarded_proto != 'https') {
     return 301 https://$host$request_uri;
   }
+<% end %>
 
   location / {
     proxy_pass http://localhost:5601;

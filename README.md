@@ -1,11 +1,8 @@
 # ![](https://gravatar.com/avatar/11d3bc4c3163e3d238d558d5c9d98efe?s=64) aptible/kibana
 
 [![Docker Repository on Quay.io](https://quay.io/repository/aptible/kibana/status)](https://quay.io/repository/aptible/kibana)
-[![Build Status](https://travis-ci.org/aptible/docker-kibana.svg?branch=master)](https://travis-ci.org/aptible/docker-kibana)
 
-Kibana as an Aptible app. This app automatically detects your Elasticsearch
-version and starts Kibana 4.1, 4.4, or 5.0 accordingly.
-
+Kibana as an Aptible App.
 
 ## Security considerations
 
@@ -19,82 +16,115 @@ against the upstream Elasticsearch instance using Kibana's credentials**.
 This is probably what you want if you're deploying Kibana, but it means you
 should make sure you choose strong passwords for `AUTH_CREDENTIALS`.
 
-
 ## Installation
 
-To run as an app on Aptible:
+To deploy Kibana as an App on Enclave:
 
- 1. Create an app in your [Aptible dashboard](https://dashboard.aptible.com) for Kibana. In the
-    steps that follow, we'll use &lt;YOUR_KIBANA_APP_HANDLE&gt; anywhere that you should substitute the
-    actual app handle the results from this step in the instructions.
-
- 2. Use the [Aptible CLI](https://github.com/aptible/aptible-cli) to set AUTH_CREDENTIALS to the
-    username/password you want to use to access the app. To set the user to "foo" and password
-    to "bar", run:
+1. Create a new App for Kibana. In the step that follows, we'll use `$HANDLE`
+   anywhere that you should substitute the actual App handle you specified in
+   this step.
 
     ```
-    aptible config:set AUTH_CREDENTIALS=foo:bar --app <YOUR_KIBANA_APP_HANDLE>
+    aptible apps:create "$HANDLE"
     ```
 
- 3. Use the [Aptible CLI](https://github.com/aptible/aptible-cli) to set DATABASE_URL to the
-    URL of your Elasticsearch instance on Aptible (this is just the connection string presented
-    in the Aptible dashboard when you select your Elasticsearch instance). If your URL is
-    http://user:password@example.com, run:
+2. In a single `aptible deploy` command,
+
+    * Deploy the appropriate Kibana version for your Elasticsearch Database. For
+     example, if you are using Elasticsearch 6.2, then you should substitute
+     `$KIBANA_VERSION` with `6.2`.
+    * Set `AUTH_CREDENTIALS` to the username / password combination you want to
+     use to access Kibana.
+    * Set `DATABASE_URL` to the URL of your Elasticsearch instance on Aptible
+     (this is the connection string presented in the Aptible dashboard when you
+     select your Elasticsearch instance).
 
     ```
-    aptible config:set DATABASE_URL=http://user:password@example.com --app <YOUR_KIBANA_APP_HANDLE>
+    aptible deploy \
+     --app "$HANDLE" \
+     --docker-image "aptible/kibana:$KIBANA_VERSION" \
+     "AUTH_CREDENTIALS=username:password" \
+     "DATABASE_URL=https://user:password@example.com" \
+     FORCE_SSL=true
     ```
 
- 4. (Optional) Update your configuration to specify a Kibana version. If you are
-    using Elasticsearch 1.x, then use Kibana 4.1. For Elasticsearch 2.x, use
-    Kibana 4.4. If you have Elasticsearch 5.0, use Kibana 5. If you don't set this,
-    this app will auto-detect your Elasticsearch version from `DATABASE_URL`,
-    so it's entirely fine to leave it empty.
+If this fails, review the troubleshooting instructions below.
+
+3. Create an Endpoint to make the Kibana app accessible:
 
     ```
-    # For Elasticsearch 1.x
-    aptible config:set KIBANA_ACTIVE_VERSION=41 --app <YOUR_KIBANA_APP_HANDLE>
-
-    # For Elasticsearch 2.x
-    aptible config:set KIBANA_ACTIVE_VERSION=44 --app <YOUR_KIBANA_APP_HANDLE>
-
-    # For Elasticsearch 5.x
-    aptible config:set KIBANA_ACTIVE_VERSION=5 --app <YOUR_KIBANA_APP_HANDLE>
+    aptible endpoints:https:create \
+      --app "$HANDLE" \
+      --default-domain \
+      cmd
     ```
 
-    If you don't specify a version, this app will try to guess one based on your
-    `DATABASE_URL`, or fall back to the most recent Kibana version.
+    For more options (e.g. to use your own domain) for the Endpoint, review our
+    [documentation][0].
 
- 5. (Optional) Kibana config options can be set for `default_route` and `kibana_index` which are then saved to the config.js:
+## Troubleshooting
 
-    ```
-    aptible config:set DEFAULT_ROUTE=/path/to/default --app <YOUR_KIBANA_APP_HANDLE>
-    aptible config:set KIBANA_INDEX=your_index --app <YOUR_KIBANA_APP_HANDLE>
-    ```
+You might encounter the following errors when attempting to deploy:
 
- 6. Clone this repository and push it to your Aptible app:
+* _Unable to reach Elasticsearch server_: This means the `DATABASE_URL` you
+  provided is incorrect, or points to an Elasticsearch Database that is not
+  reachable from your Kibana app. Double-check that the `DATABASE_URL` you used
+  matches your Elasticsearch Database's connection URL, and make sure that you
+  are deploying Kibana in the Environment (or Stack) where your Elasticsearch
+  Database is located. Correct the URL if it was invalid, or start over if you
+  need to create the App in a different Environment.
+* _Incorrect Kibana version detected_: This means the Kibana version you are
+  attempting to deploy is not compatible with the Elasticsearch version you are
+  using. Correct the Kibana version as instructed, then deploy again.
 
-    ```
-    git clone https://github.com/aptible/docker-kibana.git
-    cd docker-kibana
-    git remote add aptible git@beta.aptible.com:<YOUR_KIBANA_APP_HANDLE>.git
-    git push aptible master
-    ```
+
+## Available Tags and Compatibility
+
+* `latest`: Currently Kibana 6.7
+* `6.7`: For Elasticserach 6.7.x
+* `6.6`: For Elasticserach 6.6.x
+* `6.5`: For Elasticserach 6.5.x
+* `6.4`: For Elasticserach 6.4.x
+* `6.3`: For Elasticserach 6.3.x
+* `6.2`: For Elasticsearch 6.2.x
+* `6.1`: For Elasticsearch 6.1.x
+* `6.0`: For Elasticsearch 6.0.x
+* `5.6`: (EOL 2019-03-11) For Elasticsearch 5.6.x
+* `5.1`: (EOL 2018-06-08) For Elasticsearch 5.1.x
+* `5.0`: (EOL 2018-04-26) For Elasticsearch 5.0.x
+* `4.4`: (EOL 2017-08-02) For Elasticsearch 2.x
+* `4.1`: (EOL 2016-11-10) For Elasticsearch 1.5.x
 
 
 ## Next steps
 
-You should be up and running now. If you have a default `*.on-aptible.com` VHOST, you're done. If not, add a custom VHOST to expose your Kibaba app to the Internet.
+After adding the Endpoint, you can access your Kibana app using a browser.
 
-If you're new to Kibana, try working through the
-[Kibana 10 minute walk through](http://www.elasticsearch.org/guide/en/kibana/current/using-kibana-for-the-first-time.html) as an introduction. To jump in to
-a view of your recent log messages, you can start by clicking the "Discover" tab, which should default to viewing all log messages, most recent
+The URL was shown in the output when you added the Endpoint (it looks like
+`app-$ID.on-aptible.com`), but if you didn't see it, use the following command
+to display it again:
+
+```
+aptible endpoints:list --app "$HANDLE"
+```
+
+When prompted for credentials, use the username and password you specified in
+`AUTH_CREDENTIALS` when deploying.
+
+If you're new to Kibana, try working through the [Kibana 10 minute walk
+through][1] as an introduction.
+
+To jump in to a view of your recent log messages, you can start by clicking the
+"Discover" tab, which should default to viewing all log messages, most recent
 first.
+
 
 ## Copyright and License
 
 MIT License, see [LICENSE](LICENSE.md) for details.
 
-Copyright (c) 2014 [Aptible](https://www.aptible.com) and contributors.
+Copyright (c) 2019 [Aptible](https://www.aptible.com) and contributors.
 
-[<img src="https://s.gravatar.com/avatar/c386daf18778552e0d2f2442fd82144d?s=60" style="border-radius: 50%;" alt="@aaw" />](https://github.com/aaw)
+
+  [0]: https://www.aptible.com/documentation/enclave/tutorials/expose-web-app.html
+  [1]: http://www.elasticsearch.org/guide/en/kibana/current/using-kibana-for-the-first-time.html
