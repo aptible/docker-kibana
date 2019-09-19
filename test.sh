@@ -4,8 +4,8 @@ set -o nounset
 
 IMG="$REGISTRY/$REPOSITORY:$TAG"
 
-echo "Installing Busybox and running bats tests"
-docker run -i --rm --entrypoint "bash" "$IMG" -c "apt-install -y busybox > /dev/null 2>&1 && bats /tmp/test"
+echo "Installing Busybox, test dependencies, and running bats tests"
+docker run -i --rm --entrypoint "bash" "$IMG" -c "apt-install -y busybox netcat-openbsd > /dev/null 2>&1 && bats /tmp/test"
 
 ./test-auth.sh "$IMG" "$TAG"
 
