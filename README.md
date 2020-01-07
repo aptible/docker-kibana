@@ -86,8 +86,8 @@ You might encounter the following errors when attempting to deploy:
 * `6.6`: For Elasticsearch 6.6.x
 * `6.5`: For Elasticsearch 6.5.x
 * `6.4`: For Elasticsearch 6.4.x
-* `6.3`: For Elasticsearch 6.3.x
-* `6.2`: For Elasticsearch 6.2.x
+* `6.3`: (EOL 2019-12-13) For Elasticsearch 6.3.x
+* `6.2`: (EOL 2019-08-06) For Elasticsearch 6.2.x
 * `6.1`: (EOL 2019-06-13) For Elasticsearch 6.1.x
 * `6.0`: (EOL 2019-05-14) For Elasticsearch 6.0.x
 * `5.6`: (EOL 2019-03-11) For Elasticsearch 5.6.x
