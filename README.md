@@ -6,15 +6,9 @@ Kibana as an Aptible App.
 
 ## Security considerations
 
-This app is configured through two environment variables: `AUTH_CREDENTIALS`
-and `DATABASE_URL`. The former is used to authenticate Kibana users, and the
-latter is used to make requests to a backend Elasticsearch instance.
+TODO : this uses Elastic Security freatures, so authentication is controlled by Elasticsearch's security now https://www.elastic.co/blog/security-for-elasticsearch-is-now-free
 
-In other words, **any user that can log in to Kibana can execute queries
-against the upstream Elasticsearch instance using Kibana's credentials**.
-
-This is probably what you want if you're deploying Kibana, but it means you
-should make sure you choose strong passwords for `AUTH_CREDENTIALS`.
+TODO : tell them to use `FORCE_SSL`
 
 ## Installation
 
@@ -31,10 +25,8 @@ To deploy Kibana as an App on Enclave:
 2. In a single `aptible deploy` command,
 
     * Deploy the appropriate Kibana version for your Elasticsearch Database. For
-     example, if you are using Elasticsearch 6.2, then you should substitute
-     `$KIBANA_VERSION` with `6.2`.
-    * Set `AUTH_CREDENTIALS` to the username / password combination you want to
-     use to access Kibana.
+     example, if you are using Elasticsearch 7.2, then you should substitute
+     `$KIBANA_VERSION` with `7.2`.
     * Set `DATABASE_URL` to the URL of your Elasticsearch instance on Aptible
      (this is the connection string presented in the Aptible dashboard when you
      select your Elasticsearch instance).
@@ -42,8 +34,7 @@ To deploy Kibana as an App on Enclave:
     ```
     aptible deploy \
      --app "$HANDLE" \
-     --docker-image "aptible/kibana:$KIBANA_VERSION" \
-     "AUTH_CREDENTIALS=username:password" \
+     --docker-image "aptible/kibana-security:$KIBANA_VERSION" \
      "DATABASE_URL=https://user:password@example.com" \
      FORCE_SSL=true
     ```
@@ -80,21 +71,9 @@ You might encounter the following errors when attempting to deploy:
 
 ## Available Tags and Compatibility
 
-* `latest`: Currently Kibana 6.8
-* `6.8`: For Elasticsearch 6.8.x
-* `6.7`: For Elasticsearch 6.7.x
-* `6.6`: For Elasticsearch 6.6.x
-* `6.5`: For Elasticsearch 6.5.x
-* `6.4`: For Elasticsearch 6.4.x
-* `6.3`: For Elasticsearch 6.3.x
-* `6.2`: For Elasticsearch 6.2.x
-* `6.1`: (EOL 2019-06-13) For Elasticsearch 6.1.x
-* `6.0`: (EOL 2019-05-14) For Elasticsearch 6.0.x
-* `5.6`: (EOL 2019-03-11) For Elasticsearch 5.6.x
-* `5.1`: (EOL 2018-06-08) For Elasticsearch 5.1.x
-* `5.0`: (EOL 2018-04-26) For Elasticsearch 5.0.x
-* `4.4`: (EOL 2017-08-02) For Elasticsearch 2.x
-* `4.1`: (EOL 2016-11-10) For Elasticsearch 1.5.x
+* `latest`: Currently Kibana 7.5
+* `7.5`: For Elasticsearch 7.5.x
+* `7.4`: For Elasticsearch 7.4.x
 
 
 ## Next steps
@@ -109,11 +88,7 @@ to display it again:
 aptible endpoints:list --app "$HANDLE"
 ```
 
-When prompted for credentials, use the username and password you specified in
-`AUTH_CREDENTIALS` when deploying.
-
-If you're new to Kibana, try working through the [Kibana 10 minute walk
-through][1] as an introduction.
+When prompted for credentials, use the database username and password to get started.
 
 To jump in to a view of your recent log messages, you can start by clicking the
 "Discover" tab, which should default to viewing all log messages, most recent
@@ -128,4 +103,3 @@ Copyright (c) 2019 [Aptible](https://www.aptible.com) and contributors.
 
 
   [0]: https://www.aptible.com/documentation/enclave/tutorials/expose-web-app.html
-  [1]: http://www.elasticsearch.org/guide/en/kibana/current/using-kibana-for-the-first-time.html

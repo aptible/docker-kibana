@@ -5,26 +5,12 @@ set -o nounset
 IMG="$1"
 TAG="$2"
 
-case "$TAG" in
-  4.1 )
-    echo "Skipping for Kibana 4.1 + ES 1.5"
-    exit 0
-    ;;
-  4.4 )
-    ES_VERSION=2.2
-    ;;
-  * )
-    ES_VERSION="$TAG"
-    ;;
-esac
-
 DB_CONTAINER="kbelastic"
 DATA_CONTAINER="${DB_CONTAINER}-data"
-ES_IMG="quay.io/aptible/elasticsearch:${ES_VERSION}"
+ES_IMG="quay.io/aptible/elasticsearch-security:${TAG}"
 KIBANA_CONTAINER="kibana-${TAG}"
-KIBANA_CREDS=kuser:kpass
-ES_USER=euser 
-ES_PASS=epass
+ES_USER=euser
+ES_PASS=epassword
 
 function cleanup {
   echo "Cleaning up"
@@ -36,7 +22,7 @@ function wait_for_request {
   shift
 
   for _ in $(seq 1 30); do
-    if docker exec -it "$CONTAINER" curl -f -v "$@" >/dev/null 2>&1; then
+    if docker exec -it "$CONTAINER" curl -k -f -v "$@" >/dev/null 2>&1; then
       return 0
     fi
     sleep 1
@@ -65,25 +51,28 @@ docker run -d --name="$DB_CONTAINER" \
   "${ES_IMG}"
 
 echo "Waiting for DB to come online"
-wait_for_request "$DB_CONTAINER" "http://localhost:9200"
+wait_for_request "$DB_CONTAINER" "https://${ES_USER}:${ES_PASS}@localhost:9200"
 
 ES_IP="$(docker inspect --format='{{.NetworkSettings.Networks.bridge.IPAddress}}' ${DB_CONTAINER})"
 
 echo "Starting Kibana"
 docker run -d --name="$KIBANA_CONTAINER" \
-  -e DATABASE_URL="http://${ES_USER}:${ES_PASS}@${ES_IP}:80" \
-  -e AUTH_CREDENTIALS="$KIBANA_CREDS" \
-  -e AUTH_TESTING="true" \
+  -e DATABASE_URL="https://${ES_USER}:${ES_PASS}@${ES_IP}:9200" \
   "$IMG"
 
+echo "Wait for kibana to boot"
 wait_for_request "${KIBANA_CONTAINER}" \
-   -u "$KIBANA_CREDS" \
-  'http://localhost:80/elasticsearch/*/_search' \
-  -H "kbn-version: $KIBANA_VERSION" \
-  -H 'content-type: application/json' \
-  --data-binary '{}'
+  'http://localhost:80/' >/dev/null 2>&1
 
-wait_for_request "${KIBANA_CONTAINER}" \
-  -u "$KIBANA_CREDS" \
-  'http://localhost:80/app/kibana' \
-  -H "kbn-version: $KIBANA_VERSION"
+echo "Make sure it returns an error without auth."
+# Should return exit status 22 representing a >400 response, in this case a 401
+docker exec "${KIBANA_CONTAINER}" curl -fs \
+  'http://localhost:80/api/index_management/indices' \
+  -H 'Accept: application/json' -H 'kbn-version: 7.4.2' \
+  || [[ $? == 22 ]]
+
+echo "Make sure the elasticsearch user/pass can authenticate."
+docker exec "${KIBANA_CONTAINER}" curl -fs \
+  -u euser:epassword \
+  'http://localhost:80/api/index_management/indices' \
+  -H 'Accept: application/json' -H 'kbn-version: 7.4.2' >/dev/null 2>&1

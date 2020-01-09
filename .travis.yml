@@ -6,20 +6,8 @@ services:
 
 env:
   matrix:
-    - TAG=4.1
-    - TAG=4.4
-    - TAG=5.0
-    - TAG=5.1
-    - TAG=5.6
-    - TAG=6.0
-    - TAG=6.1
-    - TAG=6.2
-    - TAG=6.3
-    - TAG=6.4
-    - TAG=6.5
-    - TAG=6.6
-    - TAG=6.7
-    - TAG=6.8
+    - TAG=7.4
+    - TAG=7.5
 
 script:
   - make build

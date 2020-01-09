@@ -1,1 +1,1 @@
-LATEST_TAG = 6.8
+LATEST_TAG = 7.5

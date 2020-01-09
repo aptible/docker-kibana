@@ -1,17 +1,11 @@
 FROM quay.io/aptible/ubuntu:<%= ENV.fetch 'OS_VERSION' %>
 
-# Install NGiNX.
-RUN apt-get update && \
-    apt-get install -y software-properties-common \
-    python-software-properties && \
-    add-apt-repository -y ppa:nginx/stable && apt-get update && \
-    apt-get -y install curl ucspi-tcp apache2-utils nginx ruby
+RUN apt-get update && apt-get -y install curl ruby
 
 ENV TAG <%= ENV.fetch 'TAG' %>
 ENV KIBANA_VERSION <%= ENV.fetch 'KIBANA_VERSION' %>
 ENV KIBANA_DOWNLOAD <%= ENV.fetch 'KIBANA_DOWNLOAD' %>
 ENV KIBANA_SHA1SUM <%= ENV.fetch 'KIBANA_SHA1SUM' %>
-
 
 RUN curl -fsSL "${KIBANA_DOWNLOAD}" -o ./installer.tar.gz && \
     echo "${KIBANA_SHA1SUM}  installer.tar.gz" | sha1sum -c - && \
@@ -19,19 +13,10 @@ RUN curl -fsSL "${KIBANA_DOWNLOAD}" -o ./installer.tar.gz && \
     tar xzf "installer.tar.gz" -C /opt/kibana --strip-components 1 && \
     rm "installer.tar.gz"
 
-# Overwrite default nginx config with our config.
-RUN rm /etc/nginx/sites-enabled/*
-ADD templates/sites-enabled /
-
 RUN rm "/opt/kibana/config/kibana.yml" 
-ADD ${TAG}/templates/kibana.yml.erb /opt/kibana/config/
+ADD templates/kibana.yml.erb /opt/kibana/config/
 
-<% if ENV["TAG"] =="4.4" %>
-ADD ${TAG}/patches /patches
-RUN patch -p1 -d "/opt/kibana" < /patches/0001-Set-authorization-header-when-connecting-to-ES.patch
-<% end %>
 
-# Add script that starts NGiNX in front of Kibana and tails the NGiNX access/error logs.
 ADD bin /usr/bin/
 RUN chmod 700 /usr/bin/run-kibana.sh
 RUN chmod 700 /usr/bin/check-es-version.sh
@@ -40,7 +25,6 @@ ADD files/.aptible.yml /.aptible/
 # Add tests. Those won't run as part of the build because customers don't need to run
 # them when deploying, but they'll be run in test.sh
 ADD test /tmp/test
-ADD ${TAG}/test /tmp/test
 
 EXPOSE 80
 

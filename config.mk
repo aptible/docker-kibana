@@ -1,4 +1,4 @@
 REGISTRY = quay.io
-REPOSITORY = aptible/kibana
+REPOSITORY = aptible/kibana-security
 
 PUSH_REGISTRIES = $(REGISTRY) docker.io
